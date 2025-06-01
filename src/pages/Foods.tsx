@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import Navigation from '@/components/Navigation';
 import { Button } from "@/components/ui/button";
@@ -22,6 +21,7 @@ const Foods = () => {
   const { toast } = useToast();
   const [searchTerm, setSearchTerm] = useState('');
   const [showAddForm, setShowAddForm] = useState(false);
+  const [editingFood, setEditingFood] = useState<FoodItem | null>(null);
   const [foods, setFoods] = useState<FoodItem[]>([
     {
       id: 1,
@@ -58,6 +58,13 @@ const Foods = () => {
   ]);
 
   const [newFood, setNewFood] = useState({
+    name: '',
+    category: '',
+    expiryDate: '',
+    quantity: ''
+  });
+
+  const [editFood, setEditFood] = useState({
     name: '',
     category: '',
     expiryDate: '',
@@ -105,6 +112,51 @@ const Foods = () => {
       title: "Food added!",
       description: `${newFood.name} has been added to your inventory.`,
     });
+  };
+
+  const handleEditFood = (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!editingFood) return;
+
+    const daysUntilExpiry = calculateDaysUntilExpiry(editFood.expiryDate);
+    
+    const updatedFood: FoodItem = {
+      ...editingFood,
+      name: editFood.name,
+      category: editFood.category,
+      expiryDate: editFood.expiryDate,
+      daysUntilExpiry,
+      quantity: editFood.quantity
+    };
+
+    setFoods(foods.map(food => 
+      food.id === editingFood.id ? updatedFood : food
+    ));
+    
+    setEditingFood(null);
+    setEditFood({ name: '', category: '', expiryDate: '', quantity: '' });
+    
+    toast({
+      title: "Food updated!",
+      description: `${editFood.name} has been updated successfully.`,
+    });
+  };
+
+  const startEdit = (food: FoodItem) => {
+    setEditingFood(food);
+    setEditFood({
+      name: food.name,
+      category: food.category,
+      expiryDate: food.expiryDate,
+      quantity: food.quantity
+    });
+    setShowAddForm(false);
+  };
+
+  const cancelEdit = () => {
+    setEditingFood(null);
+    setEditFood({ name: '', category: '', expiryDate: '', quantity: '' });
   };
 
   const handleDeleteFood = (id: number) => {
@@ -196,7 +248,10 @@ const Foods = () => {
               />
             </div>
             <Button
-              onClick={() => setShowAddForm(!showAddForm)}
+              onClick={() => {
+                setShowAddForm(!showAddForm);
+                setEditingFood(null);
+              }}
               className="bg-orange-500 hover:bg-orange-600 text-white rounded-xl px-6 py-3 font-semibold"
             >
               <Plus className="h-4 w-4 mr-2" />
@@ -281,6 +336,83 @@ const Foods = () => {
             </Card>
           )}
 
+          {/* Edit Food Form */}
+          {editingFood && (
+            <Card className="mb-6 border-blue-200 animate-slide-up">
+              <CardHeader>
+                <CardTitle className="text-xl text-gray-800">Edit Food Item</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <form onSubmit={handleEditFood} className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="edit-food-name">Food Name</Label>
+                    <Input
+                      id="edit-food-name"
+                      value={editFood.name}
+                      onChange={(e) => setEditFood({...editFood, name: e.target.value})}
+                      placeholder="e.g., Milk, Bread, Apples"
+                      className="rounded-xl border-blue-200 focus:border-blue-400 focus:ring-blue-400"
+                      required
+                    />
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <Label htmlFor="edit-food-category">Category</Label>
+                    <Input
+                      id="edit-food-category"
+                      value={editFood.category}
+                      onChange={(e) => setEditFood({...editFood, category: e.target.value})}
+                      placeholder="e.g., Dairy, Fruits, Meat"
+                      className="rounded-xl border-blue-200 focus:border-blue-400 focus:ring-blue-400"
+                      required
+                    />
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <Label htmlFor="edit-food-expiry">Expiry Date</Label>
+                    <Input
+                      id="edit-food-expiry"
+                      type="date"
+                      value={editFood.expiryDate}
+                      onChange={(e) => setEditFood({...editFood, expiryDate: e.target.value})}
+                      className="rounded-xl border-blue-200 focus:border-blue-400 focus:ring-blue-400"
+                      required
+                    />
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <Label htmlFor="edit-food-quantity">Quantity</Label>
+                    <Input
+                      id="edit-food-quantity"
+                      value={editFood.quantity}
+                      onChange={(e) => setEditFood({...editFood, quantity: e.target.value})}
+                      placeholder="e.g., 1 bottle, 500g, 6 pieces"
+                      className="rounded-xl border-blue-200 focus:border-blue-400 focus:ring-blue-400"
+                      required
+                    />
+                  </div>
+                  
+                  <div className="md:col-span-2 flex gap-2">
+                    <Button
+                      type="submit"
+                      className="bg-blue-500 hover:bg-blue-600 text-white rounded-xl"
+                    >
+                      Update Food
+                    </Button>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={cancelEdit}
+                      className="border-blue-300 text-blue-600 hover:bg-blue-50 rounded-xl"
+                    >
+                      Cancel
+                    </Button>
+                  </div>
+                </form>
+              </CardContent>
+            </Card>
+          )}
+
           {/* Food Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredFoods.map((food, index) => {
@@ -298,8 +430,13 @@ const Foods = () => {
                         <p className="text-gray-500 text-sm">{food.quantity}</p>
                       </div>
                       <div className="flex space-x-2">
-                        <Button size="sm" variant="ghost" className="p-2 hover:bg-orange-50">
-                          <Edit2 className="h-4 w-4 text-gray-600" />
+                        <Button 
+                          size="sm" 
+                          variant="ghost" 
+                          className="p-2 hover:bg-blue-50"
+                          onClick={() => startEdit(food)}
+                        >
+                          <Edit2 className="h-4 w-4 text-blue-600" />
                         </Button>
                         <Button 
                           size="sm" 
