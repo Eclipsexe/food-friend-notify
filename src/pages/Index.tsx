@@ -40,11 +40,11 @@ const Index = () => {
         <div className="max-w-7xl mx-auto">
           <div className="text-center animate-fade-in">
             <div className="mb-8">
-              <div className="w-20 h-20 rounded-3xl flex items-center justify-center mx-auto mb-6 animate-bounce-gentle shadow-lg">
+              <div className="w-24 h-24 rounded-3xl flex items-center justify-center mx-auto mb-6 animate-bounce-gentle shadow-2xl bg-white">
                 <img 
-                  src="/lovable-uploads/0ccbf492-a843-4398-a0fd-1fc92d034797.png" 
+                  src="/lovable-uploads/ec2acfae-5167-4dc8-b408-301389c24126.png" 
                   alt="FreshKeeper Logo" 
-                  className="w-16 h-16"
+                  className="w-20 h-20"
                 />
               </div>
               <h1 className="text-4xl sm:text-6xl font-poppins font-bold text-gray-900 mb-6">
@@ -159,11 +159,11 @@ const Index = () => {
       <footer className="bg-white border-t border-orange-100 px-4 sm:px-6 lg:px-8 py-12">
         <div className="max-w-7xl mx-auto text-center">
           <div className="flex items-center justify-center space-x-2 mb-4">
-            <div className="w-8 h-8 rounded-xl flex items-center justify-center">
+            <div className="w-10 h-10 rounded-xl flex items-center justify-center bg-white shadow-md">
               <img 
-                src="/lovable-uploads/0ccbf492-a843-4398-a0fd-1fc92d034797.png" 
+                src="/lovable-uploads/ec2acfae-5167-4dc8-b408-301389c24126.png" 
                 alt="FreshKeeper Logo" 
-                className="w-6 h-6"
+                className="w-8 h-8"
               />
             </div>
             <span className="text-xl font-poppins font-semibold text-gray-800">FreshKeeper</span>
