@@ -32,7 +32,7 @@ const Navigation = () => {
             <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center group-hover:scale-105 transition-transform duration-200 shadow-lg border border-orange-100">
               <img 
                 src="/lovable-uploads/ec2acfae-5167-4dc8-b408-301389c24126.png" 
-                alt="FreshKeeper Logo" 
+                alt="CookFetch Logo" 
                 className="w-10 h-10"
               />
             </div>
@@ -108,7 +108,7 @@ const Navigation = () => {
               
               {/* Mobile Language Switch */}
               <div className="flex items-center justify-between bg-orange-50 rounded-xl px-4 py-3 border border-orange-200 mt-4">
-                <span className="text-sm font-medium text-gray-700">Language / ภาษา</span>
+                <span className="text-sm font-medium text-gray-700">{t('language')} / ภาษา</span>
                 <div className="flex items-center space-x-2">
                   <span className={`text-sm font-medium transition-colors ${language === 'en' ? 'text-orange-600' : 'text-gray-400'}`}>
                     EN

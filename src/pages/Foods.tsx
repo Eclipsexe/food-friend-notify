@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import Navigation from '@/components/Navigation';
 import { Button } from "@/components/ui/button";
@@ -7,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Label } from "@/components/ui/label";
 import { Plus, Calendar, Search, Edit2, Trash2, AlertTriangle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 interface FoodItem {
   id: number;
@@ -19,6 +21,7 @@ interface FoodItem {
 
 const Foods = () => {
   const { toast } = useToast();
+  const { t } = useLanguage();
   const [searchTerm, setSearchTerm] = useState('');
   const [showAddForm, setShowAddForm] = useState(false);
   const [editingFood, setEditingFood] = useState<FoodItem | null>(null);
@@ -80,13 +83,13 @@ const Foods = () => {
 
   const getExpiryStatus = (daysUntilExpiry: number) => {
     if (daysUntilExpiry < 0) {
-      return { color: 'bg-red-100 text-red-800 border-red-200', label: 'Expired', icon: '🚫' };
+      return { color: 'bg-red-100 text-red-800 border-red-200', label: t('expiresEarlyExpired'), icon: '🚫' };
     } else if (daysUntilExpiry <= 2) {
-      return { color: 'bg-orange-100 text-orange-800 border-orange-200', label: 'Expires Soon', icon: '⚠️' };
+      return { color: 'bg-orange-100 text-orange-800 border-orange-200', label: t('expiresEarlySoon'), icon: '⚠️' };
     } else if (daysUntilExpiry <= 7) {
-      return { color: 'bg-yellow-100 text-yellow-800 border-yellow-200', label: 'Expires This Week', icon: '⏰' };
+      return { color: 'bg-yellow-100 text-yellow-800 border-yellow-200', label: t('expiresEarlyThisWeek'), icon: '⏰' };
     } else {
-      return { color: 'bg-green-100 text-green-800 border-green-200', label: 'Fresh', icon: '✅' };
+      return { color: 'bg-green-100 text-green-800 border-green-200', label: t('expiresEarlyFresh'), icon: '✅' };
     }
   };
 
@@ -109,8 +112,8 @@ const Foods = () => {
     setShowAddForm(false);
     
     toast({
-      title: "Food added!",
-      description: `${newFood.name} has been added to your inventory.`,
+      title: t('foodAdded'),
+      description: `${newFood.name} ${t('foodAddedDesc')}`,
     });
   };
 
@@ -138,8 +141,8 @@ const Foods = () => {
     setEditFood({ name: '', category: '', expiryDate: '', quantity: '' });
     
     toast({
-      title: "Food updated!",
-      description: `${editFood.name} has been updated successfully.`,
+      title: t('foodUpdated'),
+      description: `${editFood.name} ${t('foodUpdatedDesc')}`,
     });
   };
 
@@ -162,8 +165,8 @@ const Foods = () => {
   const handleDeleteFood = (id: number) => {
     setFoods(foods.filter(food => food.id !== id));
     toast({
-      title: "Food removed",
-      description: "The item has been removed from your inventory.",
+      title: t('foodRemoved'),
+      description: t('foodRemovedDesc'),
     });
   };
 
@@ -184,10 +187,10 @@ const Foods = () => {
           {/* Header */}
           <div className="mb-8 animate-fade-in">
             <h1 className="text-3xl font-poppins font-bold text-gray-900 mb-2">
-              My Food Inventory
+              {t('myFoodInventory')}
             </h1>
             <p className="text-gray-600">
-              Track your groceries and never let food go to waste
+              {t('trackGroceries')}
             </p>
 
             {/* Stats */}
@@ -200,7 +203,7 @@ const Foods = () => {
                     </div>
                     <div>
                       <p className="text-2xl font-bold text-gray-900">{foods.length}</p>
-                      <p className="text-sm text-gray-600">Total Items</p>
+                      <p className="text-sm text-gray-600">{t('totalItems')}</p>
                     </div>
                   </div>
                 </CardContent>
@@ -214,7 +217,7 @@ const Foods = () => {
                     </div>
                     <div>
                       <p className="text-2xl font-bold text-orange-600">{expiringCount}</p>
-                      <p className="text-sm text-gray-600">Expiring Soon</p>
+                      <p className="text-sm text-gray-600">{t('expiringSoon')}</p>
                     </div>
                   </div>
                 </CardContent>
@@ -228,7 +231,7 @@ const Foods = () => {
                     </div>
                     <div>
                       <p className="text-2xl font-bold text-red-600">{expiredCount}</p>
-                      <p className="text-sm text-gray-600">Expired</p>
+                      <p className="text-sm text-gray-600">{t('expired')}</p>
                     </div>
                   </div>
                 </CardContent>
@@ -241,7 +244,7 @@ const Foods = () => {
             <div className="relative flex-1">
               <Search className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
               <Input
-                placeholder="Search your foods..."
+                placeholder={t('searchFoods')}
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="pl-10 rounded-xl border-orange-200 focus:border-orange-400 focus:ring-orange-400"
@@ -255,7 +258,7 @@ const Foods = () => {
               className="bg-orange-500 hover:bg-orange-600 text-white rounded-xl px-6 py-3 font-semibold"
             >
               <Plus className="h-4 w-4 mr-2" />
-              Add Food
+              {t('addFood')}
             </Button>
           </div>
 
@@ -263,36 +266,36 @@ const Foods = () => {
           {showAddForm && (
             <Card className="mb-6 border-orange-200 animate-slide-up">
               <CardHeader>
-                <CardTitle className="text-xl text-gray-800">Add New Food Item</CardTitle>
+                <CardTitle className="text-xl text-gray-800">{t('addNewFoodItem')}</CardTitle>
               </CardHeader>
               <CardContent>
                 <form onSubmit={handleAddFood} className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label htmlFor="food-name">Food Name</Label>
+                    <Label htmlFor="food-name">{t('foodName')}</Label>
                     <Input
                       id="food-name"
                       value={newFood.name}
                       onChange={(e) => setNewFood({...newFood, name: e.target.value})}
-                      placeholder="e.g., Milk, Bread, Apples"
+                      placeholder={t('foodNamePlaceholder')}
                       className="rounded-xl border-orange-200 focus:border-orange-400 focus:ring-orange-400"
                       required
                     />
                   </div>
                   
                   <div className="space-y-2">
-                    <Label htmlFor="food-category">Category</Label>
+                    <Label htmlFor="food-category">{t('category')}</Label>
                     <Input
                       id="food-category"
                       value={newFood.category}
                       onChange={(e) => setNewFood({...newFood, category: e.target.value})}
-                      placeholder="e.g., Dairy, Fruits, Meat"
+                      placeholder={t('categoryPlaceholder')}
                       className="rounded-xl border-orange-200 focus:border-orange-400 focus:ring-orange-400"
                       required
                     />
                   </div>
                   
                   <div className="space-y-2">
-                    <Label htmlFor="food-expiry">Expiry Date</Label>
+                    <Label htmlFor="food-expiry">{t('expiryDate')}</Label>
                     <Input
                       id="food-expiry"
                       type="date"
@@ -304,12 +307,12 @@ const Foods = () => {
                   </div>
                   
                   <div className="space-y-2">
-                    <Label htmlFor="food-quantity">Quantity</Label>
+                    <Label htmlFor="food-quantity">{t('quantity')}</Label>
                     <Input
                       id="food-quantity"
                       value={newFood.quantity}
                       onChange={(e) => setNewFood({...newFood, quantity: e.target.value})}
-                      placeholder="e.g., 1 bottle, 500g, 6 pieces"
+                      placeholder={t('quantityPlaceholder')}
                       className="rounded-xl border-orange-200 focus:border-orange-400 focus:ring-orange-400"
                       required
                     />
@@ -320,7 +323,7 @@ const Foods = () => {
                       type="submit"
                       className="bg-orange-500 hover:bg-orange-600 text-white rounded-xl"
                     >
-                      Add Food
+                      {t('addFood')}
                     </Button>
                     <Button
                       type="button"
@@ -328,7 +331,7 @@ const Foods = () => {
                       onClick={() => setShowAddForm(false)}
                       className="border-orange-300 text-orange-600 hover:bg-orange-50 rounded-xl"
                     >
-                      Cancel
+                      {t('cancel')}
                     </Button>
                   </div>
                 </form>
@@ -338,56 +341,56 @@ const Foods = () => {
 
           {/* Edit Food Form */}
           {editingFood && (
-            <Card className="mb-6 border-blue-200 animate-slide-up">
+            <Card className="mb-6 border-orange-200 animate-slide-up">
               <CardHeader>
-                <CardTitle className="text-xl text-gray-800">Edit Food Item</CardTitle>
+                <CardTitle className="text-xl text-gray-800">{t('editFoodItem')}</CardTitle>
               </CardHeader>
               <CardContent>
                 <form onSubmit={handleEditFood} className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label htmlFor="edit-food-name">Food Name</Label>
+                    <Label htmlFor="edit-food-name">{t('foodName')}</Label>
                     <Input
                       id="edit-food-name"
                       value={editFood.name}
                       onChange={(e) => setEditFood({...editFood, name: e.target.value})}
-                      placeholder="e.g., Milk, Bread, Apples"
-                      className="rounded-xl border-blue-200 focus:border-blue-400 focus:ring-blue-400"
+                      placeholder={t('foodNamePlaceholder')}
+                      className="rounded-xl border-orange-200 focus:border-orange-400 focus:ring-orange-400"
                       required
                     />
                   </div>
                   
                   <div className="space-y-2">
-                    <Label htmlFor="edit-food-category">Category</Label>
+                    <Label htmlFor="edit-food-category">{t('category')}</Label>
                     <Input
                       id="edit-food-category"
                       value={editFood.category}
                       onChange={(e) => setEditFood({...editFood, category: e.target.value})}
-                      placeholder="e.g., Dairy, Fruits, Meat"
-                      className="rounded-xl border-blue-200 focus:border-blue-400 focus:ring-blue-400"
+                      placeholder={t('categoryPlaceholder')}
+                      className="rounded-xl border-orange-200 focus:border-orange-400 focus:ring-orange-400"
                       required
                     />
                   </div>
                   
                   <div className="space-y-2">
-                    <Label htmlFor="edit-food-expiry">Expiry Date</Label>
+                    <Label htmlFor="edit-food-expiry">{t('expiryDate')}</Label>
                     <Input
                       id="edit-food-expiry"
                       type="date"
                       value={editFood.expiryDate}
                       onChange={(e) => setEditFood({...editFood, expiryDate: e.target.value})}
-                      className="rounded-xl border-blue-200 focus:border-blue-400 focus:ring-blue-400"
+                      className="rounded-xl border-orange-200 focus:border-orange-400 focus:ring-orange-400"
                       required
                     />
                   </div>
                   
                   <div className="space-y-2">
-                    <Label htmlFor="edit-food-quantity">Quantity</Label>
+                    <Label htmlFor="edit-food-quantity">{t('quantity')}</Label>
                     <Input
                       id="edit-food-quantity"
                       value={editFood.quantity}
                       onChange={(e) => setEditFood({...editFood, quantity: e.target.value})}
-                      placeholder="e.g., 1 bottle, 500g, 6 pieces"
-                      className="rounded-xl border-blue-200 focus:border-blue-400 focus:ring-blue-400"
+                      placeholder={t('quantityPlaceholder')}
+                      className="rounded-xl border-orange-200 focus:border-orange-400 focus:ring-orange-400"
                       required
                     />
                   </div>
@@ -395,17 +398,17 @@ const Foods = () => {
                   <div className="md:col-span-2 flex gap-2">
                     <Button
                       type="submit"
-                      className="bg-blue-500 hover:bg-blue-600 text-white rounded-xl"
+                      className="bg-orange-500 hover:bg-orange-600 text-white rounded-xl"
                     >
-                      Update Food
+                      {t('updateFood')}
                     </Button>
                     <Button
                       type="button"
                       variant="outline"
                       onClick={cancelEdit}
-                      className="border-blue-300 text-blue-600 hover:bg-blue-50 rounded-xl"
+                      className="border-orange-300 text-orange-600 hover:bg-orange-50 rounded-xl"
                     >
-                      Cancel
+                      {t('cancel')}
                     </Button>
                   </div>
                 </form>
@@ -433,10 +436,10 @@ const Foods = () => {
                         <Button 
                           size="sm" 
                           variant="ghost" 
-                          className="p-2 hover:bg-blue-50"
+                          className="p-2 hover:bg-orange-50"
                           onClick={() => startEdit(food)}
                         >
-                          <Edit2 className="h-4 w-4 text-blue-600" />
+                          <Edit2 className="h-4 w-4 text-orange-600" />
                         </Button>
                         <Button 
                           size="sm" 
@@ -456,20 +459,20 @@ const Foods = () => {
                       
                       <div className="flex items-center text-sm text-gray-600">
                         <Calendar className="h-4 w-4 mr-2" />
-                        Expires: {new Date(food.expiryDate).toLocaleDateString()}
+                        {t('expires')} {new Date(food.expiryDate).toLocaleDateString()}
                       </div>
                       
                       {food.daysUntilExpiry >= 0 && (
                         <p className="text-sm text-gray-600">
-                          {food.daysUntilExpiry === 0 ? 'Expires today' : 
-                           food.daysUntilExpiry === 1 ? 'Expires tomorrow' :
-                           `Expires in ${food.daysUntilExpiry} days`}
+                          {food.daysUntilExpiry === 0 ? t('expiresEarlyToday') : 
+                           food.daysUntilExpiry === 1 ? t('expiresEarlyTomorrow') :
+                           `${t('expiresIn')} ${food.daysUntilExpiry} ${food.daysUntilExpiry === 1 ? t('expiresInDay') : t('expiresInDays')}`}
                         </p>
                       )}
                       
                       {food.daysUntilExpiry < 0 && (
                         <p className="text-sm text-red-600 font-medium">
-                          Expired {Math.abs(food.daysUntilExpiry)} day{Math.abs(food.daysUntilExpiry) !== 1 ? 's' : ''} ago
+                          {t('expiresEarlyExpired')} {Math.abs(food.daysUntilExpiry)} {Math.abs(food.daysUntilExpiry) !== 1 ? t('expiredDaysAgo') : t('expiredDayAgo')}
                         </p>
                       )}
                     </div>
@@ -485,10 +488,10 @@ const Foods = () => {
                 <span className="text-2xl">🔍</span>
               </div>
               <h3 className="text-xl font-poppins font-semibold text-gray-900 mb-2">
-                No food items found
+                {t('noFoodItemsFound')}
               </h3>
               <p className="text-gray-600 mb-4">
-                {searchTerm ? 'Try adjusting your search terms' : 'Start by adding your first food item'}
+                {searchTerm ? t('tryAdjustingSearch') : t('startByAdding')}
               </p>
               {!searchTerm && (
                 <Button
@@ -496,7 +499,7 @@ const Foods = () => {
                   className="bg-orange-500 hover:bg-orange-600 text-white rounded-xl"
                 >
                   <Plus className="h-4 w-4 mr-2" />
-                  Add Your First Food
+                  {t('addYourFirstFood')}
                 </Button>
               )}
             </div>
