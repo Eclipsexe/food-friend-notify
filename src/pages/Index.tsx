@@ -6,28 +6,31 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { ArrowRight, Bell, Calendar, MessageCircle, Plus, Shield } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 const Index = () => {
+  const { t } = useLanguage();
+
   const features = [
     {
       icon: <Plus className="h-6 w-6" />,
-      title: "Add Your Foods",
-      description: "Easily track all your groceries with expiration dates"
+      title: t('addYourFoods'),
+      description: t('addYourFoodsDesc')
     },
     {
       icon: <Bell className="h-6 w-6" />,
-      title: "Smart Notifications",
-      description: "Get reminded before your food expires"
+      title: t('smartNotifications'),
+      description: t('smartNotificationsDesc')
     },
     {
       icon: <MessageCircle className="h-6 w-6" />,
-      title: "Recipe Assistant",
-      description: "Find recipes based on your available ingredients"
+      title: t('recipeAssistant'),
+      description: t('recipeAssistantDesc')
     },
     {
       icon: <Calendar className="h-6 w-6" />,
-      title: "Expiry Dashboard",
-      description: "Visual overview of all your food items"
+      title: t('expiryDashboard'),
+      description: t('expiryDashboardDesc')
     }
   ];
 
@@ -43,32 +46,29 @@ const Index = () => {
               <div className="w-24 h-24 rounded-3xl flex items-center justify-center mx-auto mb-6 animate-bounce-gentle shadow-2xl bg-white">
                 <img 
                   src="/lovable-uploads/ec2acfae-5167-4dc8-b408-301389c24126.png" 
-                  alt="FreshKeeper Logo" 
+                  alt="CookFetch Logo" 
                   className="w-20 h-20"
                 />
               </div>
               <h1 className="text-4xl sm:text-6xl font-poppins font-bold text-gray-900 mb-6">
-                Never Waste
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-500 to-orange-600"> Food </span>
-                Again
+                {t('neverWasteFoodAgain')}
               </h1>
               <p className="text-xl text-gray-600 max-w-3xl mx-auto mb-8 leading-relaxed">
-                Track your groceries, get expiration reminders, and discover amazing recipes 
-                with ingredients you already have. Smart food management made simple.
+                {t('heroDescription')}
               </p>
             </div>
             
             <div className="flex flex-col sm:flex-row gap-4 justify-center mb-16">
               <Link to="/foods">
                 <Button size="lg" className="bg-orange-500 hover:bg-orange-600 text-white px-8 py-6 rounded-2xl text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-200 group">
-                  Start Managing Food
+                  {t('startManagingFood')}
                   <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
                 </Button>
               </Link>
               <Link to="/login">
                 <Button variant="outline" size="lg" className="border-orange-300 text-orange-600 hover:bg-orange-50 px-8 py-6 rounded-2xl text-lg font-semibold">
                   <Shield className="mr-2 h-5 w-5" />
-                  Sign Up Free
+                  {t('signUpFree')}
                 </Button>
               </Link>
             </div>
@@ -96,10 +96,10 @@ const Index = () => {
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-12 animate-fade-in">
             <h2 className="text-3xl sm:text-4xl font-poppins font-bold text-gray-900 mb-4">
-              Meet Your Kitchen Assistant
+              {t('meetYourKitchenAssistant')}
             </h2>
             <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-              Chat with our AI assistant to discover delicious recipes using the ingredients you have at home.
+              {t('kitchenAssistantDesc')}
             </p>
           </div>
           
@@ -114,29 +114,29 @@ const Index = () => {
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-12 animate-fade-in">
             <h2 className="text-3xl sm:text-4xl font-poppins font-bold text-gray-900 mb-4">
-              How It Works
+              {t('howItWorks')}
             </h2>
-            <p className="text-xl text-gray-600">Simple steps to smart food management</p>
+            <p className="text-xl text-gray-600">{t('howItWorksDesc')}</p>
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {[
               {
                 step: "1",
-                title: "Add Your Food",
-                description: "Scan or manually add your groceries with expiration dates",
+                title: t('addYourFood'),
+                description: t('addYourFoodDesc'),
                 emoji: "📝"
               },
               {
                 step: "2", 
-                title: "Get Reminders",
-                description: "Receive notifications before your food expires",
+                title: t('getReminders'),
+                description: t('getRemindersDesc'),
                 emoji: "🔔"
               },
               {
                 step: "3",
-                title: "Cook & Enjoy",
-                description: "Use our recipe suggestions to create delicious meals",
+                title: t('cookAndEnjoy'),
+                description: t('cookAndEnjoyDesc'),
                 emoji: "👨‍🍳"
               }
             ].map((item, index) => (
@@ -162,14 +162,14 @@ const Index = () => {
             <div className="w-10 h-10 rounded-xl flex items-center justify-center bg-white shadow-md">
               <img 
                 src="/lovable-uploads/ec2acfae-5167-4dc8-b408-301389c24126.png" 
-                alt="FreshKeeper Logo" 
+                alt="CookFetch Logo" 
                 className="w-8 h-8"
               />
             </div>
-            <span className="text-xl font-poppins font-semibold text-gray-800">FreshKeeper</span>
+            <span className="text-xl font-poppins font-semibold text-gray-800">CookFetch</span>
           </div>
-          <p className="text-gray-600 mb-4">Smart food management for a sustainable kitchen</p>
-          <p className="text-sm text-gray-500">© 2025 FreshKeeper. Made with ❤️ for food lovers.</p>
+          <p className="text-gray-600 mb-4">{t('smartFoodManagement')}</p>
+          <p className="text-sm text-gray-500">{t('footerCopyright')}</p>
         </div>
       </footer>
     </div>
