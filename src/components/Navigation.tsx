@@ -1,6 +1,7 @@
 
 import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
+import { Switch } from "@/components/ui/switch";
 import { Menu, X } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -8,7 +9,7 @@ import { useLanguage } from "@/contexts/LanguageContext";
 const Navigation = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const location = useLocation();
-  const { t } = useLanguage();
+  const { language, setLanguage, t } = useLanguage();
 
   const navItems = [
     { name: t('home'), path: '/' },
@@ -17,6 +18,10 @@ const Navigation = () => {
   ];
 
   const isActive = (path: string) => location.pathname === path;
+
+  const toggleLanguage = () => {
+    setLanguage(language === 'en' ? 'th' : 'en');
+  };
 
   return (
     <nav className="bg-white/80 backdrop-blur-md border-b border-orange-100 sticky top-0 z-50">
@@ -52,6 +57,21 @@ const Navigation = () => {
                 </Link>
               ))}
             </div>
+            
+            {/* Language Switch */}
+            <div className="flex items-center space-x-2 bg-orange-50 rounded-full px-4 py-2 border border-orange-200">
+              <span className={`text-sm font-medium transition-colors ${language === 'en' ? 'text-orange-600' : 'text-gray-400'}`}>
+                EN
+              </span>
+              <Switch
+                checked={language === 'th'}
+                onCheckedChange={toggleLanguage}
+                className="data-[state=checked]:bg-orange-500"
+              />
+              <span className={`text-sm font-medium transition-colors ${language === 'th' ? 'text-orange-600' : 'text-gray-400'}`}>
+                TH
+              </span>
+            </div>
           </div>
 
           {/* Mobile menu button */}
@@ -85,6 +105,24 @@ const Navigation = () => {
                   </Button>
                 </Link>
               ))}
+              
+              {/* Mobile Language Switch */}
+              <div className="flex items-center justify-between bg-orange-50 rounded-xl px-4 py-3 border border-orange-200 mt-4">
+                <span className="text-sm font-medium text-gray-700">{t('language')} / ภาษา</span>
+                <div className="flex items-center space-x-2">
+                  <span className={`text-sm font-medium transition-colors ${language === 'en' ? 'text-orange-600' : 'text-gray-400'}`}>
+                    EN
+                  </span>
+                  <Switch
+                    checked={language === 'th'}
+                    onCheckedChange={toggleLanguage}
+                    className="data-[state=checked]:bg-orange-500"
+                  />
+                  <span className={`text-sm font-medium transition-colors ${language === 'th' ? 'text-orange-600' : 'text-gray-400'}`}>
+                    TH
+                  </span>
+                </div>
+              </div>
             </div>
           </div>
         )}
