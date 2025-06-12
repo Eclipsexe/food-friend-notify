@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
 import { CheckCircle, AlertCircle } from "lucide-react";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 interface MealInputProps {
   suggestions: string[];
@@ -12,12 +13,13 @@ interface MealInputProps {
 }
 
 const MealInput = ({ suggestions, onMealSubmit, onValidationError }: MealInputProps) => {
+  const { t } = useLanguage();
   const [inputValue, setInputValue] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSubmit = async () => {
     if (!inputValue.trim()) {
-      onValidationError("Please enter a meal name");
+      onValidationError(t('pleaseEnterMealName'));
       return;
     }
 
@@ -28,7 +30,7 @@ const MealInput = ({ suggestions, onMealSubmit, onValidationError }: MealInputPr
     if (isValid) {
       setInputValue('');
     } else {
-      onValidationError("Please choose a valid option from the suggested meals above");
+      onValidationError(t('pleaseChooseValidOption'));
     }
     
     setIsSubmitting(false);
@@ -48,7 +50,7 @@ const MealInput = ({ suggestions, onMealSubmit, onValidationError }: MealInputPr
         <div className="space-y-3">
           <div className="flex items-center space-x-2 text-green-700">
             <CheckCircle className="h-4 w-4" />
-            <span className="text-sm font-medium">Choose your meal from the suggestions above:</span>
+            <span className="text-sm font-medium">{t('chooseMealFromSuggestions')}</span>
           </div>
           
           <div className="flex space-x-2">
@@ -56,7 +58,7 @@ const MealInput = ({ suggestions, onMealSubmit, onValidationError }: MealInputPr
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
               onKeyPress={handleKeyPress}
-              placeholder="Type the meal name you want to cook..."
+              placeholder={t('typeMealNamePlaceholder')}
               className="flex-1 border-green-300 focus:border-green-500"
               disabled={isSubmitting}
             />
@@ -65,7 +67,7 @@ const MealInput = ({ suggestions, onMealSubmit, onValidationError }: MealInputPr
               disabled={isSubmitting || !inputValue.trim()}
               className="bg-green-500 hover:bg-green-600"
             >
-              {isSubmitting ? "Adding..." : "Add to History"}
+              {isSubmitting ? t('adding') : t('addToHistory')}
             </Button>
           </div>
         </div>

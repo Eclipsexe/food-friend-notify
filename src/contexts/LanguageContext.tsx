@@ -80,7 +80,25 @@ const translations = {
     cookAndEnjoy: 'Cook & Enjoy',
     cookAndEnjoyDesc: 'Use our recipe suggestions to create delicious meals',
     smartFoodManagement: 'Smart food management for a sustainable kitchen',
-    footerCopyright: '© 2025 CookFetch. Made with ❤️ for food lovers.'
+    footerCopyright: '© 2025 CookFetch. Made with ❤️ for food lovers.',
+    // Chatbot translations
+    kitchenAssistant: 'Kitchen Assistant',
+    askMeAboutRecipes: 'Ask me about recipes!',
+    history: 'History',
+    whatIngredientsDoYouHave: 'What ingredients do you have?',
+    hiImYourKitchenAssistant: "Hi! I'm your kitchen assistant! 🍳 Tell me what ingredients you have, and I'll suggest delicious recipes you can make!",
+    // Meal Input translations
+    chooseMealFromSuggestions: 'Choose your meal from the suggestions above:',
+    typeMealNamePlaceholder: 'Type the meal name you want to cook...',
+    addToHistory: 'Add to History',
+    adding: 'Adding...',
+    pleaseEnterMealName: 'Please enter a meal name',
+    pleaseChooseValidOption: 'Please choose a valid option from the suggested meals above',
+    // Meal History translations
+    mealHistory: 'Meal History',
+    noMealsInHistory: 'No meals in your history yet. Start cooking and your choices will appear here! 🍽️',
+    clearAll: 'Clear All',
+    from: 'From:'
   },
   th: {
     home: 'หน้าแรก',
@@ -152,7 +170,25 @@ const translations = {
     cookAndEnjoy: 'ทำอาหารและเพลิดเพลิน',
     cookAndEnjoyDesc: 'ใช้คำแนะนำสูตรอาหารของเราเพื่อสร้างอาหารอร่อย',
     smartFoodManagement: 'การจัดการอาหารอัจฉริยะเพื่อครัวที่ยั่งยืน',
-    footerCopyright: '© 2025 CookFetch สร้างด้วย ❤️ สำหรับผู้รักอาหาร'
+    footerCopyright: '© 2025 CookFetch สร้างด้วย ❤️ สำหรับผู้รักอาหาร',
+    // Chatbot translations
+    kitchenAssistant: 'ผู้ช่วยในครัว',
+    askMeAboutRecipes: 'ถามเกี่ยวกับสูตรอาหาร!',
+    history: 'ประวัติ',
+    whatIngredientsDoYouHave: 'คุณมีส่วนผสมอะไรบ้าง?',
+    hiImYourKitchenAssistant: 'สวัสดี! ฉันเป็นผู้ช่วยในครัวของคุณ! 🍳 บอกฉันว่าคุณมีส่วนผสมอะไรบ้าง แล้วฉันจะแนะนำสูตรอาหารอร่อยที่คุณทำได้!',
+    // Meal Input translations
+    chooseMealFromSuggestions: 'เลือกอาหารของคุณจากคำแนะนำข้างต้น:',
+    typeMealNamePlaceholder: 'พิมพ์ชื่ออาหารที่คุณต้องการทำ...',
+    addToHistory: 'เพิ่มในประวัติ',
+    adding: 'กำลังเพิ่ม...',
+    pleaseEnterMealName: 'กรุณาใส่ชื่ออาหาร',
+    pleaseChooseValidOption: 'กรุณาเลือกตัวเลือกที่ถูกต้องจากอาหารที่แนะนำข้างต้น',
+    // Meal History translations
+    mealHistory: 'ประวัติอาหาร',
+    noMealsInHistory: 'ยังไม่มีอาหารในประวัติของคุณ เริ่มทำอาหารแล้วตัวเลือกของคุณจะปรากฏที่นี่! 🍽️',
+    clearAll: 'ลบทั้งหมด',
+    from: 'จาก:'
   }
 };
 

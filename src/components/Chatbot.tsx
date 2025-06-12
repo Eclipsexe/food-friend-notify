@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
 import { Send, MessageCircle, AlertCircle } from "lucide-react";
 import { useMealHistory } from "@/hooks/useMealHistory";
+import { useLanguage } from "@/contexts/LanguageContext";
 import MealInput from "./MealInput";
 import MealHistory from "./MealHistory";
 
@@ -17,10 +18,12 @@ interface Message {
 }
 
 const Chatbot = () => {
+  const { t } = useLanguage();
+  
   const [messages, setMessages] = useState<Message[]>([
     {
       id: 1,
-      text: "Hi! I'm your kitchen assistant! 🍳 Tell me what ingredients you have, and I'll suggest delicious recipes you can make!",
+      text: t('hiImYourKitchenAssistant'),
       isBot: true,
       timestamp: new Date()
     }
@@ -130,8 +133,8 @@ const Chatbot = () => {
               <MessageCircle className="h-4 w-4" />
             </div>
             <div>
-              <h3 className="font-poppins font-semibold">Kitchen Assistant</h3>
-              <p className="text-sm text-orange-100">Ask me about recipes!</p>
+              <h3 className="font-poppins font-semibold">{t('kitchenAssistant')}</h3>
+              <p className="text-sm text-orange-100">{t('askMeAboutRecipes')}</p>
             </div>
           </div>
           <Button
@@ -140,7 +143,7 @@ const Chatbot = () => {
             onClick={() => setShowHistory(!showHistory)}
             className="text-white hover:bg-white/20"
           >
-            History ({history.length})
+            {t('history')} ({history.length})
           </Button>
         </div>
 
@@ -183,7 +186,7 @@ const Chatbot = () => {
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
               onKeyPress={handleKeyPress}
-              placeholder="What ingredients do you have?"
+              placeholder={t('whatIngredientsDoYouHave')}
               className="flex-1 rounded-full border-orange-200 focus:border-orange-400 focus:ring-orange-400"
             />
             <Button

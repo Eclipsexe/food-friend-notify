@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { History, Trash2, Clock } from "lucide-react";
 import { MealHistoryItem } from "@/hooks/useMealHistory";
+import { useLanguage } from "@/contexts/LanguageContext";
 import { format } from "date-fns";
 
 interface MealHistoryProps {
@@ -13,18 +14,20 @@ interface MealHistoryProps {
 }
 
 const MealHistory = ({ history, onClearHistory }: MealHistoryProps) => {
+  const { t } = useLanguage();
+
   if (history.length === 0) {
     return (
       <Card className="border-orange-200">
         <CardHeader>
           <CardTitle className="flex items-center space-x-2 text-orange-600">
             <History className="h-5 w-5" />
-            <span>Meal History</span>
+            <span>{t('mealHistory')}</span>
           </CardTitle>
         </CardHeader>
         <CardContent>
           <p className="text-gray-500 text-center py-8">
-            No meals in your history yet. Start cooking and your choices will appear here! 🍽️
+            {t('noMealsInHistory')}
           </p>
         </CardContent>
       </Card>
@@ -36,7 +39,7 @@ const MealHistory = ({ history, onClearHistory }: MealHistoryProps) => {
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
         <CardTitle className="flex items-center space-x-2 text-orange-600">
           <History className="h-5 w-5" />
-          <span>Meal History ({history.length})</span>
+          <span>{t('mealHistory')} ({history.length})</span>
         </CardTitle>
         <Button
           variant="outline"
@@ -45,7 +48,7 @@ const MealHistory = ({ history, onClearHistory }: MealHistoryProps) => {
           className="text-red-600 hover:text-red-700 hover:bg-red-50"
         >
           <Trash2 className="h-4 w-4 mr-1" />
-          Clear All
+          {t('clearAll')}
         </Button>
       </CardHeader>
       <CardContent className="space-y-3 max-h-80 overflow-y-auto">
@@ -64,7 +67,7 @@ const MealHistory = ({ history, onClearHistory }: MealHistoryProps) => {
               </div>
             </div>
             <Badge variant="secondary" className="text-xs">
-              From: {item.originalSuggestion.slice(0, 20)}
+              {t('from')} {item.originalSuggestion.slice(0, 20)}
               {item.originalSuggestion.length > 20 ? '...' : ''}
             </Badge>
           </div>
