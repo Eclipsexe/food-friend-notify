@@ -60,19 +60,17 @@ const Navigation = ({ userXP = 0 }: NavigationProps) => {
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-4">
-            {/* XP Bar */}
-            {userXP > 0 && (
-              <div className="flex items-center space-x-3 bg-gradient-to-r from-yellow-50 to-orange-50 rounded-full px-4 py-2 border border-orange-200">
-                <div className="flex items-center space-x-1">
-                  <Star className="h-4 w-4 text-yellow-500" />
-                  <span className="text-sm font-bold text-orange-600">{t('level')} {level}</span>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <Progress value={progressPercent} className="w-16 h-2" />
-                  <span className="text-xs text-gray-600">{userXP} XP</span>
-                </div>
+            {/* XP Bar - Always show */}
+            <div className="flex items-center space-x-3 bg-gradient-to-r from-yellow-50 to-orange-50 rounded-full px-4 py-2 border border-orange-200">
+              <div className="flex items-center space-x-1">
+                <Star className="h-4 w-4 text-yellow-500" />
+                <span className="text-sm font-bold text-orange-600">{t('level')} {level}</span>
               </div>
-            )}
+              <div className="flex items-center space-x-2">
+                <Progress value={progressPercent} className="w-16 h-2" />
+                <span className="text-xs text-gray-600">{userXP} XP</span>
+              </div>
+            </div>
 
             <div className="flex items-center space-x-1">
               {navItems.map((item) => (
@@ -134,19 +132,17 @@ const Navigation = ({ userXP = 0 }: NavigationProps) => {
         {isMenuOpen && (
           <div className="md:hidden absolute top-16 left-0 right-0 bg-white/95 backdrop-blur-md border-b border-orange-100 shadow-lg animate-slide-up">
             <div className="px-4 py-4 space-y-2">
-              {/* Mobile XP Bar */}
-              {userXP > 0 && (
-                <div className="flex items-center justify-between bg-gradient-to-r from-yellow-50 to-orange-50 rounded-xl px-4 py-3 border border-orange-200 mb-4">
-                  <div className="flex items-center space-x-2">
-                    <Star className="h-4 w-4 text-yellow-500" />
-                    <span className="text-sm font-bold text-orange-600">{t('level')} {level}</span>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <Progress value={progressPercent} className="w-20 h-2" />
-                    <span className="text-xs text-gray-600">{userXP} XP</span>
-                  </div>
+              {/* Mobile XP Bar - Always show */}
+              <div className="flex items-center justify-between bg-gradient-to-r from-yellow-50 to-orange-50 rounded-xl px-4 py-3 border border-orange-200 mb-4">
+                <div className="flex items-center space-x-2">
+                  <Star className="h-4 w-4 text-yellow-500" />
+                  <span className="text-sm font-bold text-orange-600">{t('level')} {level}</span>
                 </div>
-              )}
+                <div className="flex items-center space-x-2">
+                  <Progress value={progressPercent} className="w-20 h-2" />
+                  <span className="text-xs text-gray-600">{userXP} XP</span>
+                </div>
+              </div>
 
               {navItems.map((item) => (
                 <Link key={item.name} to={item.path} onClick={() => setIsMenuOpen(false)}>
