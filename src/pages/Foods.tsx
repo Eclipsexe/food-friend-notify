@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import Navigation from '@/components/Navigation';
 import { Button } from "@/components/ui/button";
@@ -6,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Label } from "@/components/ui/label";
-import { Plus, Calendar, Search, Edit2, Trash2, AlertTriangle } from "lucide-react";
+import { Plus, Calendar, Search, Edit2, Trash2, AlertTriangle, Target, CheckCircle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useLanguage } from "@/contexts/LanguageContext";
 
@@ -17,6 +16,8 @@ interface FoodItem {
   expiryDate: string;
   daysUntilExpiry: number;
   quantity: string;
+  questAccepted?: boolean;
+  questFinished?: boolean;
 }
 
 const Foods = () => {
@@ -32,7 +33,9 @@ const Foods = () => {
       category: "Dairy",
       expiryDate: "2024-06-02",
       daysUntilExpiry: 2,
-      quantity: "1 bottle"
+      quantity: "1 bottle",
+      questAccepted: false,
+      questFinished: false
     },
     {
       id: 2,
@@ -40,7 +43,9 @@ const Foods = () => {
       category: "Bakery",
       expiryDate: "2024-06-03",
       daysUntilExpiry: 3,
-      quantity: "1 loaf"
+      quantity: "1 loaf",
+      questAccepted: false,
+      questFinished: false
     },
     {
       id: 3,
@@ -48,7 +53,9 @@ const Foods = () => {
       category: "Fruits",
       expiryDate: "2024-06-07",
       daysUntilExpiry: 7,
-      quantity: "6 pieces"
+      quantity: "6 pieces",
+      questAccepted: false,
+      questFinished: false
     },
     {
       id: 4,
@@ -56,7 +63,9 @@ const Foods = () => {
       category: "Meat",
       expiryDate: "2024-05-31",
       daysUntilExpiry: -1,
-      quantity: "500g"
+      quantity: "500g",
+      questAccepted: false,
+      questFinished: false
     }
   ]);
 
@@ -93,6 +102,43 @@ const Foods = () => {
     }
   };
 
+  const getQuestText = (category: string) => {
+    const questTexts: { [key: string]: string } = {
+      'Dairy': 'Create a creamy smoothie or milkshake using this dairy product!',
+      'Bakery': 'Make a delicious sandwich or toast with this bakery item!',
+      'Fruits': 'Prepare a fresh fruit salad or healthy snack!',
+      'Meat': 'Cook a protein-rich meal with this meat ingredient!',
+      'Vegetables': 'Create a nutritious vegetable dish or salad!',
+      'Grains': 'Make a hearty grain-based meal or side dish!',
+      'Seafood': 'Prepare a delicious seafood dish with fresh flavors!'
+    };
+    return questTexts[category] || `Create an amazing dish using this ${category.toLowerCase()} ingredient!`;
+  };
+
+  const handleAcceptQuest = (id: number) => {
+    setFoods(foods.map(food => 
+      food.id === id ? { ...food, questAccepted: true } : food
+    ));
+    
+    const food = foods.find(f => f.id === id);
+    toast({
+      title: "Quest Accepted! 🎯",
+      description: `You've accepted the ${food?.category} quest for ${food?.name}!`,
+    });
+  };
+
+  const handleFinishQuest = (id: number) => {
+    setFoods(foods.map(food => 
+      food.id === id ? { ...food, questFinished: true } : food
+    ));
+    
+    const food = foods.find(f => f.id === id);
+    toast({
+      title: "Quest Completed! 🏆",
+      description: `Great job! You've completed the ${food?.category} quest with ${food?.name}!`,
+    });
+  };
+
   const handleAddFood = (e: React.FormEvent) => {
     e.preventDefault();
     
@@ -104,7 +150,9 @@ const Foods = () => {
       category: newFood.category,
       expiryDate: newFood.expiryDate,
       daysUntilExpiry,
-      quantity: newFood.quantity
+      quantity: newFood.quantity,
+      questAccepted: false,
+      questFinished: false
     };
 
     setFoods([...foods, foodItem]);
@@ -429,7 +477,6 @@ const Foods = () => {
                         <h3 className="font-poppins font-semibold text-lg text-gray-900 mb-1">
                           {food.name}
                         </h3>
-                        <p className="text-gray-600 text-sm">{food.category}</p>
                         <p className="text-gray-500 text-sm">{food.quantity}</p>
                       </div>
                       <div className="flex space-x-2">
@@ -451,6 +498,43 @@ const Foods = () => {
                         </Button>
                       </div>
                     </div>
+                    
+                    {/* Quest Card Section */}
+                    <Card className="mb-4 bg-gradient-to-r from-purple-50 to-blue-50 border-purple-200">
+                      <CardContent className="p-4">
+                        <div className="flex items-center space-x-2 mb-3">
+                          <Target className="h-5 w-5 text-purple-600" />
+                          <h4 className="font-bold text-lg text-purple-800">{food.category} Quest</h4>
+                        </div>
+                        
+                        <p className="text-purple-700 text-sm mb-4 leading-relaxed">
+                          {getQuestText(food.category)}
+                        </p>
+                        
+                        {food.questFinished ? (
+                          <div className="flex items-center space-x-2 text-green-600">
+                            <CheckCircle className="h-5 w-5" />
+                            <span className="font-semibold">Quest Completed! 🏆</span>
+                          </div>
+                        ) : food.questAccepted ? (
+                          <Button 
+                            onClick={() => handleFinishQuest(food.id)}
+                            className="w-full bg-green-500 hover:bg-green-600 text-white"
+                          >
+                            <CheckCircle className="h-4 w-4 mr-2" />
+                            Finish Quest
+                          </Button>
+                        ) : (
+                          <Button 
+                            onClick={() => handleAcceptQuest(food.id)}
+                            className="w-full bg-purple-500 hover:bg-purple-600 text-white"
+                          >
+                            <Target className="h-4 w-4 mr-2" />
+                            Accept Quest
+                          </Button>
+                        )}
+                      </CardContent>
+                    </Card>
                     
                     <div className="space-y-3">
                       <Badge className={`${status.color} px-3 py-1 text-xs font-medium border`}>
