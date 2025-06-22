@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import Navigation from '@/components/Navigation';
 import { Button } from "@/components/ui/button";
@@ -82,6 +83,8 @@ const Foods = () => {
     expiryDate: '',
     quantity: ''
   });
+
+  const categories = ['Dairy', 'Bakery', 'Fruits', 'Meat', 'Vegetables', 'Grains', 'Seafood'];
 
   const calculateDaysUntilExpiry = (expiryDate: string): number => {
     const today = new Date();
@@ -317,59 +320,71 @@ const Foods = () => {
                 <CardTitle className="text-xl text-gray-800">{t('addNewFoodItem')}</CardTitle>
               </CardHeader>
               <CardContent>
-                <form onSubmit={handleAddFood} className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="food-name">{t('foodName')}</Label>
-                    <Input
-                      id="food-name"
-                      value={newFood.name}
-                      onChange={(e) => setNewFood({...newFood, name: e.target.value})}
-                      placeholder={t('foodNamePlaceholder')}
-                      className="rounded-xl border-orange-200 focus:border-orange-400 focus:ring-orange-400"
-                      required
-                    />
+                <form onSubmit={handleAddFood} className="space-y-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="food-name">{t('foodName')}</Label>
+                      <Input
+                        id="food-name"
+                        value={newFood.name}
+                        onChange={(e) => setNewFood({...newFood, name: e.target.value})}
+                        placeholder={t('foodNamePlaceholder')}
+                        className="rounded-xl border-orange-200 focus:border-orange-400 focus:ring-orange-400"
+                        required
+                      />
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <Label htmlFor="food-expiry">{t('expiryDate')}</Label>
+                      <Input
+                        id="food-expiry"
+                        type="date"
+                        value={newFood.expiryDate}
+                        onChange={(e) => setNewFood({...newFood, expiryDate: e.target.value})}
+                        className="rounded-xl border-orange-200 focus:border-orange-400 focus:ring-orange-400"
+                        required
+                      />
+                    </div>
+                    
+                    <div className="space-y-2 md:col-span-2">
+                      <Label htmlFor="food-quantity">{t('quantity')}</Label>
+                      <Input
+                        id="food-quantity"
+                        value={newFood.quantity}
+                        onChange={(e) => setNewFood({...newFood, quantity: e.target.value})}
+                        placeholder={t('quantityPlaceholder')}
+                        className="rounded-xl border-orange-200 focus:border-orange-400 focus:ring-orange-400"
+                        required
+                      />
+                    </div>
                   </div>
                   
                   <div className="space-y-2">
-                    <Label htmlFor="food-category">{t('category')}</Label>
-                    <Input
-                      id="food-category"
-                      value={newFood.category}
-                      onChange={(e) => setNewFood({...newFood, category: e.target.value})}
-                      placeholder={t('categoryPlaceholder')}
-                      className="rounded-xl border-orange-200 focus:border-orange-400 focus:ring-orange-400"
-                      required
-                    />
+                    <Label>{t('category')}</Label>
+                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                      {categories.map((category) => (
+                        <Button
+                          key={category}
+                          type="button"
+                          variant={newFood.category === category ? "default" : "outline"}
+                          onClick={() => setNewFood({...newFood, category})}
+                          className={`rounded-xl ${
+                            newFood.category === category 
+                              ? "bg-orange-500 hover:bg-orange-600 text-white" 
+                              : "border-orange-300 text-orange-600 hover:bg-orange-50"
+                          }`}
+                        >
+                          {category}
+                        </Button>
+                      ))}
+                    </div>
                   </div>
                   
-                  <div className="space-y-2">
-                    <Label htmlFor="food-expiry">{t('expiryDate')}</Label>
-                    <Input
-                      id="food-expiry"
-                      type="date"
-                      value={newFood.expiryDate}
-                      onChange={(e) => setNewFood({...newFood, expiryDate: e.target.value})}
-                      className="rounded-xl border-orange-200 focus:border-orange-400 focus:ring-orange-400"
-                      required
-                    />
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <Label htmlFor="food-quantity">{t('quantity')}</Label>
-                    <Input
-                      id="food-quantity"
-                      value={newFood.quantity}
-                      onChange={(e) => setNewFood({...newFood, quantity: e.target.value})}
-                      placeholder={t('quantityPlaceholder')}
-                      className="rounded-xl border-orange-200 focus:border-orange-400 focus:ring-orange-400"
-                      required
-                    />
-                  </div>
-                  
-                  <div className="md:col-span-2 flex gap-2">
+                  <div className="flex gap-2">
                     <Button
                       type="submit"
                       className="bg-orange-500 hover:bg-orange-600 text-white rounded-xl"
+                      disabled={!newFood.category}
                     >
                       {t('addFood')}
                     </Button>
@@ -394,59 +409,71 @@ const Foods = () => {
                 <CardTitle className="text-xl text-gray-800">{t('editFoodItem')}</CardTitle>
               </CardHeader>
               <CardContent>
-                <form onSubmit={handleEditFood} className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="edit-food-name">{t('foodName')}</Label>
-                    <Input
-                      id="edit-food-name"
-                      value={editFood.name}
-                      onChange={(e) => setEditFood({...editFood, name: e.target.value})}
-                      placeholder={t('foodNamePlaceholder')}
-                      className="rounded-xl border-orange-200 focus:border-orange-400 focus:ring-orange-400"
-                      required
-                    />
+                <form onSubmit={handleEditFood} className="space-y-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="edit-food-name">{t('foodName')}</Label>
+                      <Input
+                        id="edit-food-name"
+                        value={editFood.name}
+                        onChange={(e) => setEditFood({...editFood, name: e.target.value})}
+                        placeholder={t('foodNamePlaceholder')}
+                        className="rounded-xl border-orange-200 focus:border-orange-400 focus:ring-orange-400"
+                        required
+                      />
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <Label htmlFor="edit-food-expiry">{t('expiryDate')}</Label>
+                      <Input
+                        id="edit-food-expiry"
+                        type="date"
+                        value={editFood.expiryDate}
+                        onChange={(e) => setEditFood({...editFood, expiryDate: e.target.value})}
+                        className="rounded-xl border-orange-200 focus:border-orange-400 focus:ring-orange-400"
+                        required
+                      />
+                    </div>
+                    
+                    <div className="space-y-2 md:col-span-2">
+                      <Label htmlFor="edit-food-quantity">{t('quantity')}</Label>
+                      <Input
+                        id="edit-food-quantity"
+                        value={editFood.quantity}
+                        onChange={(e) => setEditFood({...editFood, quantity: e.target.value})}
+                        placeholder={t('quantityPlaceholder')}
+                        className="rounded-xl border-orange-200 focus:border-orange-400 focus:ring-orange-400"
+                        required
+                      />
+                    </div>
                   </div>
                   
                   <div className="space-y-2">
-                    <Label htmlFor="edit-food-category">{t('category')}</Label>
-                    <Input
-                      id="edit-food-category"
-                      value={editFood.category}
-                      onChange={(e) => setEditFood({...editFood, category: e.target.value})}
-                      placeholder={t('categoryPlaceholder')}
-                      className="rounded-xl border-orange-200 focus:border-orange-400 focus:ring-orange-400"
-                      required
-                    />
+                    <Label>{t('category')}</Label>
+                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                      {categories.map((category) => (
+                        <Button
+                          key={category}
+                          type="button"
+                          variant={editFood.category === category ? "default" : "outline"}
+                          onClick={() => setEditFood({...editFood, category})}
+                          className={`rounded-xl ${
+                            editFood.category === category 
+                              ? "bg-orange-500 hover:bg-orange-600 text-white" 
+                              : "border-orange-300 text-orange-600 hover:bg-orange-50"
+                          }`}
+                        >
+                          {category}
+                        </Button>
+                      ))}
+                    </div>
                   </div>
                   
-                  <div className="space-y-2">
-                    <Label htmlFor="edit-food-expiry">{t('expiryDate')}</Label>
-                    <Input
-                      id="edit-food-expiry"
-                      type="date"
-                      value={editFood.expiryDate}
-                      onChange={(e) => setEditFood({...editFood, expiryDate: e.target.value})}
-                      className="rounded-xl border-orange-200 focus:border-orange-400 focus:ring-orange-400"
-                      required
-                    />
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <Label htmlFor="edit-food-quantity">{t('quantity')}</Label>
-                    <Input
-                      id="edit-food-quantity"
-                      value={editFood.quantity}
-                      onChange={(e) => setEditFood({...editFood, quantity: e.target.value})}
-                      placeholder={t('quantityPlaceholder')}
-                      className="rounded-xl border-orange-200 focus:border-orange-400 focus:ring-orange-400"
-                      required
-                    />
-                  </div>
-                  
-                  <div className="md:col-span-2 flex gap-2">
+                  <div className="flex gap-2">
                     <Button
                       type="submit"
                       className="bg-orange-500 hover:bg-orange-600 text-white rounded-xl"
+                      disabled={!editFood.category}
                     >
                       {t('updateFood')}
                     </Button>
@@ -465,7 +492,7 @@ const Foods = () => {
           )}
 
           {/* Food Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
             {filteredFoods.map((food, index) => {
               const status = getExpiryStatus(food.daysUntilExpiry);
               
@@ -478,6 +505,9 @@ const Foods = () => {
                           {food.name}
                         </h3>
                         <p className="text-gray-500 text-sm">{food.quantity}</p>
+                        <Badge className="mt-2 bg-blue-100 text-blue-800 border-blue-200">
+                          {food.category}
+                        </Badge>
                       </div>
                       <div className="flex space-x-2">
                         <Button 
@@ -498,43 +528,6 @@ const Foods = () => {
                         </Button>
                       </div>
                     </div>
-                    
-                    {/* Quest Card Section */}
-                    <Card className="mb-4 bg-gradient-to-r from-purple-50 to-blue-50 border-purple-200">
-                      <CardContent className="p-4">
-                        <div className="flex items-center space-x-2 mb-3">
-                          <Target className="h-5 w-5 text-purple-600" />
-                          <h4 className="font-bold text-lg text-purple-800">{food.category} Quest</h4>
-                        </div>
-                        
-                        <p className="text-purple-700 text-sm mb-4 leading-relaxed">
-                          {getQuestText(food.category)}
-                        </p>
-                        
-                        {food.questFinished ? (
-                          <div className="flex items-center space-x-2 text-green-600">
-                            <CheckCircle className="h-5 w-5" />
-                            <span className="font-semibold">Quest Completed! 🏆</span>
-                          </div>
-                        ) : food.questAccepted ? (
-                          <Button 
-                            onClick={() => handleFinishQuest(food.id)}
-                            className="w-full bg-green-500 hover:bg-green-600 text-white"
-                          >
-                            <CheckCircle className="h-4 w-4 mr-2" />
-                            Finish Quest
-                          </Button>
-                        ) : (
-                          <Button 
-                            onClick={() => handleAcceptQuest(food.id)}
-                            className="w-full bg-purple-500 hover:bg-purple-600 text-white"
-                          >
-                            <Target className="h-4 w-4 mr-2" />
-                            Accept Quest
-                          </Button>
-                        )}
-                      </CardContent>
-                    </Card>
                     
                     <div className="space-y-3">
                       <Badge className={`${status.color} px-3 py-1 text-xs font-medium border`}>
@@ -567,7 +560,7 @@ const Foods = () => {
           </div>
 
           {filteredFoods.length === 0 && (
-            <div className="text-center py-12 animate-fade-in">
+            <div className="text-center py-12 animate-fade-in mb-8">
               <div className="w-16 h-16 bg-orange-100 rounded-3xl flex items-center justify-center mx-auto mb-4">
                 <span className="text-2xl">🔍</span>
               </div>
@@ -588,6 +581,64 @@ const Foods = () => {
               )}
             </div>
           )}
+
+          {/* Quest Section - Bottom of Page */}
+          <div className="mt-12">
+            <Card className="border-purple-200 bg-gradient-to-r from-purple-50 to-blue-50">
+              <CardHeader>
+                <CardTitle className="text-2xl text-purple-800 flex items-center space-x-2">
+                  <Target className="h-6 w-6" />
+                  <span>Food Quests</span>
+                </CardTitle>
+                <p className="text-purple-700">Complete cooking quests with your food items!</p>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {foods.map((food) => (
+                    <Card key={`quest-${food.id}`} className="bg-white border-purple-200">
+                      <CardContent className="p-4">
+                        <div className="flex items-center space-x-2 mb-3">
+                          <h4 className="font-bold text-lg text-purple-800">{food.category} Quest</h4>
+                        </div>
+                        
+                        <div className="mb-3">
+                          <p className="font-semibold text-gray-900">{food.name}</p>
+                          <p className="text-sm text-gray-600">{food.quantity}</p>
+                        </div>
+                        
+                        <p className="text-purple-700 text-sm mb-4 leading-relaxed">
+                          {getQuestText(food.category)}
+                        </p>
+                        
+                        {food.questFinished ? (
+                          <div className="flex items-center space-x-2 text-green-600">
+                            <CheckCircle className="h-5 w-5" />
+                            <span className="font-semibold">Quest Completed! 🏆</span>
+                          </div>
+                        ) : food.questAccepted ? (
+                          <Button 
+                            onClick={() => handleFinishQuest(food.id)}
+                            className="w-full bg-green-500 hover:bg-green-600 text-white"
+                          >
+                            <CheckCircle className="h-4 w-4 mr-2" />
+                            Finish Quest
+                          </Button>
+                        ) : (
+                          <Button 
+                            onClick={() => handleAcceptQuest(food.id)}
+                            className="w-full bg-purple-500 hover:bg-purple-600 text-white"
+                          >
+                            <Target className="h-4 w-4 mr-2" />
+                            Accept Quest
+                          </Button>
+                        )}
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          </div>
         </div>
       </div>
     </div>
