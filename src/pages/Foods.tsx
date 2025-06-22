@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import Navigation from '@/components/Navigation';
 import { Button } from "@/components/ui/button";
@@ -27,6 +26,10 @@ const Foods = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [showAddForm, setShowAddForm] = useState(false);
   const [editingFood, setEditingFood] = useState<FoodItem | null>(null);
+  const [userXP, setUserXP] = useState(() => {
+    const savedXP = localStorage.getItem('userXP');
+    return savedXP ? parseInt(savedXP) : 0;
+  });
   const [foods, setFoods] = useState<FoodItem[]>([
     {
       id: 1,
@@ -86,6 +89,19 @@ const Foods = () => {
 
   const categories = ['Dairy', 'Bakery', 'Fruits', 'Meat', 'Vegetables', 'Grains', 'Seafood'];
 
+  const getCategoryColor = (category: string) => {
+    const colors: { [key: string]: string } = {
+      'Dairy': 'bg-orange-100 text-orange-800 border-orange-200',
+      'Bakery': 'bg-amber-100 text-amber-800 border-amber-200',
+      'Fruits': 'bg-red-100 text-red-800 border-red-200',
+      'Meat': 'bg-rose-100 text-rose-800 border-rose-200',
+      'Vegetables': 'bg-green-100 text-green-800 border-green-200',
+      'Grains': 'bg-yellow-100 text-yellow-800 border-yellow-200',
+      'Seafood': 'bg-blue-100 text-blue-800 border-blue-200'
+    };
+    return colors[category] || 'bg-gray-100 text-gray-800 border-gray-200';
+  };
+
   const calculateDaysUntilExpiry = (expiryDate: string): number => {
     const today = new Date();
     const expiry = new Date(expiryDate);
@@ -107,15 +123,19 @@ const Foods = () => {
 
   const getQuestText = (category: string) => {
     const questTexts: { [key: string]: string } = {
-      'Dairy': 'Create a creamy smoothie or milkshake using this dairy product!',
-      'Bakery': 'Make a delicious sandwich or toast with this bakery item!',
-      'Fruits': 'Prepare a fresh fruit salad or healthy snack!',
-      'Meat': 'Cook a protein-rich meal with this meat ingredient!',
-      'Vegetables': 'Create a nutritious vegetable dish or salad!',
-      'Grains': 'Make a hearty grain-based meal or side dish!',
-      'Seafood': 'Prepare a delicious seafood dish with fresh flavors!'
+      'Dairy': t('questDairy') || 'Create a creamy smoothie or milkshake using this dairy product!',
+      'Bakery': t('questBakery') || 'Make a delicious sandwich or toast with this bakery item!',
+      'Fruits': t('questFruits') || 'Prepare a fresh fruit salad or healthy snack!',
+      'Meat': t('questMeat') || 'Cook a protein-rich meal with this meat ingredient!',
+      'Vegetables': t('questVegetables') || 'Create a nutritious vegetable dish or salad!',
+      'Grains': t('questGrains') || 'Make a hearty grain-based meal or side dish!',
+      'Seafood': t('questSeafood') || 'Prepare a delicious seafood dish with fresh flavors!'
     };
-    return questTexts[category] || `Create an amazing dish using this ${category.toLowerCase()} ingredient!`;
+    return questTexts[category] || `${t('questDefault') || 'Create an amazing dish using this'} ${category.toLowerCase()} ${t('questIngredient') || 'ingredient'}!`;
+  };
+
+  const saveXPToStorage = (xp: number) => {
+    localStorage.setItem('userXP', xp.toString());
   };
 
   const handleAcceptQuest = (id: number) => {
@@ -125,8 +145,8 @@ const Foods = () => {
     
     const food = foods.find(f => f.id === id);
     toast({
-      title: "Quest Accepted! 🎯",
-      description: `You've accepted the ${food?.category} quest for ${food?.name}!`,
+      title: `${t('questAccepted')} 🎯`,
+      description: `${t('questAcceptedDesc')} ${food?.category} ${t('questFor')} ${food?.name}!`,
     });
   };
 
@@ -135,10 +155,14 @@ const Foods = () => {
       food.id === id ? { ...food, questFinished: true } : food
     ));
     
+    const newXP = userXP + 20;
+    setUserXP(newXP);
+    saveXPToStorage(newXP);
+    
     const food = foods.find(f => f.id === id);
     toast({
-      title: "Quest Completed! 🏆",
-      description: `Great job! You've completed the ${food?.category} quest with ${food?.name}!`,
+      title: `${t('questCompleted')} 🏆`,
+      description: `${t('questCompletedDesc')} ${food?.category} ${t('questWith')} ${food?.name}! +20 XP`,
     });
   };
 
@@ -226,12 +250,15 @@ const Foods = () => {
     food.category.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  // Filter foods for quests (only foods expiring within 3 days and not expired)
+  const questFoods = foods.filter(food => food.daysUntilExpiry >= 0 && food.daysUntilExpiry <= 3);
+
   const expiringCount = foods.filter(food => food.daysUntilExpiry <= 2 && food.daysUntilExpiry >= 0).length;
   const expiredCount = foods.filter(food => food.daysUntilExpiry < 0).length;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-orange-50">
-      <Navigation />
+      <Navigation userXP={userXP} />
       
       <div className="px-4 sm:px-6 lg:px-8 py-8">
         <div className="max-w-6xl mx-auto">
@@ -374,7 +401,7 @@ const Foods = () => {
                               : "border-orange-300 text-orange-600 hover:bg-orange-50"
                           }`}
                         >
-                          {category}
+                          {t(`category${category}`) || category}
                         </Button>
                       ))}
                     </div>
@@ -463,7 +490,7 @@ const Foods = () => {
                               : "border-orange-300 text-orange-600 hover:bg-orange-50"
                           }`}
                         >
-                          {category}
+                          {t(`category${category}`) || category}
                         </Button>
                       ))}
                     </div>
@@ -505,8 +532,8 @@ const Foods = () => {
                           {food.name}
                         </h3>
                         <p className="text-gray-500 text-sm">{food.quantity}</p>
-                        <Badge className="mt-2 bg-blue-100 text-blue-800 border-blue-200">
-                          {food.category}
+                        <Badge className={`mt-2 ${getCategoryColor(food.category)}`}>
+                          {t(`category${food.category}`) || food.category}
                         </Badge>
                       </div>
                       <div className="flex space-x-2">
@@ -582,63 +609,65 @@ const Foods = () => {
             </div>
           )}
 
-          {/* Quest Section - Bottom of Page */}
-          <div className="mt-12">
-            <Card className="border-purple-200 bg-gradient-to-r from-purple-50 to-blue-50">
-              <CardHeader>
-                <CardTitle className="text-2xl text-purple-800 flex items-center space-x-2">
-                  <Target className="h-6 w-6" />
-                  <span>Food Quests</span>
-                </CardTitle>
-                <p className="text-purple-700">Complete cooking quests with your food items!</p>
-              </CardHeader>
-              <CardContent>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {foods.map((food) => (
-                    <Card key={`quest-${food.id}`} className="bg-white border-purple-200">
-                      <CardContent className="p-4">
-                        <div className="flex items-center space-x-2 mb-3">
-                          <h4 className="font-bold text-lg text-purple-800">{food.category} Quest</h4>
-                        </div>
-                        
-                        <div className="mb-3">
-                          <p className="font-semibold text-gray-900">{food.name}</p>
-                          <p className="text-sm text-gray-600">{food.quantity}</p>
-                        </div>
-                        
-                        <p className="text-purple-700 text-sm mb-4 leading-relaxed">
-                          {getQuestText(food.category)}
-                        </p>
-                        
-                        {food.questFinished ? (
-                          <div className="flex items-center space-x-2 text-green-600">
-                            <CheckCircle className="h-5 w-5" />
-                            <span className="font-semibold">Quest Completed! 🏆</span>
+          {/* Quest Section - Only show if there are foods expiring within 3 days */}
+          {questFoods.length > 0 && (
+            <div className="mt-12">
+              <Card className="border-purple-200 bg-gradient-to-r from-purple-50 to-blue-50">
+                <CardHeader>
+                  <CardTitle className="text-2xl text-purple-800 flex items-center space-x-2">
+                    <Target className="h-6 w-6" />
+                    <span>{t('foodQuests')}</span>
+                  </CardTitle>
+                  <p className="text-purple-700">{t('foodQuestDesc')}</p>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {questFoods.map((food) => (
+                      <Card key={`quest-${food.id}`} className="bg-white border-purple-200">
+                        <CardContent className="p-4">
+                          <div className="flex items-center space-x-2 mb-3">
+                            <h4 className="font-bold text-lg text-purple-800">{t(`category${food.category}`) || food.category} {t('quest')}</h4>
                           </div>
-                        ) : food.questAccepted ? (
-                          <Button 
-                            onClick={() => handleFinishQuest(food.id)}
-                            className="w-full bg-green-500 hover:bg-green-600 text-white"
-                          >
-                            <CheckCircle className="h-4 w-4 mr-2" />
-                            Finish Quest
-                          </Button>
-                        ) : (
-                          <Button 
-                            onClick={() => handleAcceptQuest(food.id)}
-                            className="w-full bg-purple-500 hover:bg-purple-600 text-white"
-                          >
-                            <Target className="h-4 w-4 mr-2" />
-                            Accept Quest
-                          </Button>
-                        )}
-                      </CardContent>
-                    </Card>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-          </div>
+                          
+                          <div className="mb-3">
+                            <p className="font-semibold text-gray-900">{food.name}</p>
+                            <p className="text-sm text-gray-600">{food.quantity}</p>
+                          </div>
+                          
+                          <p className="text-purple-700 text-sm mb-4 leading-relaxed">
+                            {getQuestText(food.category)}
+                          </p>
+                          
+                          {food.questFinished ? (
+                            <div className="flex items-center space-x-2 text-green-600">
+                              <CheckCircle className="h-5 w-5" />
+                              <span className="font-semibold">{t('questCompletedBadge')} 🏆</span>
+                            </div>
+                          ) : food.questAccepted ? (
+                            <Button 
+                              onClick={() => handleFinishQuest(food.id)}
+                              className="w-full bg-green-500 hover:bg-green-600 text-white"
+                            >
+                              <CheckCircle className="h-4 w-4 mr-2" />
+                              {t('finishQuest')}
+                            </Button>
+                          ) : (
+                            <Button 
+                              onClick={() => handleAcceptQuest(food.id)}
+                              className="w-full bg-purple-500 hover:bg-purple-600 text-white"
+                            >
+                              <Target className="h-4 w-4 mr-2" />
+                              {t('acceptQuest')}
+                            </Button>
+                          )}
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          )}
         </div>
       </div>
     </div>
