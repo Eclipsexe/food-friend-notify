@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { Progress } from "@/components/ui/progress";
-import { Menu, X, Star } from "lucide-react";
+import { Menu, X, Star, MessageSquare } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 import { useLanguage } from "@/contexts/LanguageContext";
 
@@ -23,6 +23,7 @@ const Navigation = ({ userXP = 0 }: NavigationProps) => {
   const navItems = [
     { name: t('home'), path: '/' },
     { name: t('myFoods'), path: '/foods' },
+    { name: t('feedback'), path: '/feedback' },
     ...(isLoggedIn ? [] : [{ name: t('login'), path: '/login' }]),
   ];
 
@@ -83,6 +84,7 @@ const Navigation = ({ userXP = 0 }: NavigationProps) => {
                         : "text-gray-600 hover:text-orange-600 hover:bg-orange-50"
                     }`}
                   >
+                    {item.name === t('feedback') && <MessageSquare className="h-4 w-4 mr-2" />}
                     {item.name}
                   </Button>
                 </Link>
@@ -154,6 +156,7 @@ const Navigation = ({ userXP = 0 }: NavigationProps) => {
                         : "text-gray-600 hover:text-orange-600 hover:bg-orange-50"
                     }`}
                   >
+                    {item.name === t('feedback') && <MessageSquare className="h-4 w-4 mr-2" />}
                     {item.name}
                   </Button>
                 </Link>

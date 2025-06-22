@@ -162,7 +162,7 @@ const Foods = () => {
     const food = foods.find(f => f.id === id);
     toast({
       title: `${t('questCompleted')} 🏆`,
-      description: `${t('questCompletedDesc')} ${food?.category} ${t('questWith')} ${food?.name}! +20 XP`,
+      description: `${t('questCompletedDesc')} ${food?.category} ${t('questWith')} ${food?.name}! 🎉 Reward: +20 XP`,
     });
   };
 
