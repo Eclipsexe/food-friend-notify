@@ -2,29 +2,19 @@
 import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
-import { Progress } from "@/components/ui/progress";
-import { Menu, X, Star, MessageSquare } from "lucide-react";
+import { Menu, X } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 import { useLanguage } from "@/contexts/LanguageContext";
 
-interface NavigationProps {
-  userXP?: number;
-}
-
-const Navigation = ({ userXP = 0 }: NavigationProps) => {
+const Navigation = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(() => {
-    // Check if user is logged in from localStorage
-    return localStorage.getItem('isLoggedIn') === 'true';
-  });
   const location = useLocation();
   const { language, setLanguage, t } = useLanguage();
 
   const navItems = [
     { name: t('home'), path: '/' },
     { name: t('myFoods'), path: '/foods' },
-    { name: t('feedback'), path: '/feedback' },
-    ...(isLoggedIn ? [] : [{ name: t('login'), path: '/login' }]),
+    { name: t('login'), path: '/login' },
   ];
 
   const isActive = (path: string) => location.pathname === path;
@@ -32,16 +22,6 @@ const Navigation = ({ userXP = 0 }: NavigationProps) => {
   const toggleLanguage = () => {
     setLanguage(language === 'en' ? 'th' : 'en');
   };
-
-  const handleLogout = () => {
-    setIsLoggedIn(false);
-    localStorage.setItem('isLoggedIn', 'false');
-  };
-
-  // Calculate level and progress
-  const level = Math.floor(userXP / 100) + 1;
-  const currentLevelXP = userXP % 100;
-  const progressPercent = currentLevelXP;
 
   return (
     <nav className="bg-white/80 backdrop-blur-md border-b border-orange-100 sticky top-0 z-50">
@@ -61,18 +41,6 @@ const Navigation = ({ userXP = 0 }: NavigationProps) => {
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-4">
-            {/* XP Bar - Always show */}
-            <div className="flex items-center space-x-3 bg-gradient-to-r from-yellow-50 to-orange-50 rounded-full px-4 py-2 border border-orange-200">
-              <div className="flex items-center space-x-1">
-                <Star className="h-4 w-4 text-yellow-500" />
-                <span className="text-sm font-bold text-orange-600">{t('level')} {level}</span>
-              </div>
-              <div className="flex items-center space-x-2">
-                <Progress value={progressPercent} className="w-16 h-2" />
-                <span className="text-xs text-gray-600">{userXP} XP</span>
-              </div>
-            </div>
-
             <div className="flex items-center space-x-1">
               {navItems.map((item) => (
                 <Link key={item.name} to={item.path}>
@@ -84,21 +52,10 @@ const Navigation = ({ userXP = 0 }: NavigationProps) => {
                         : "text-gray-600 hover:text-orange-600 hover:bg-orange-50"
                     }`}
                   >
-                    {item.name === t('feedback') && <MessageSquare className="h-4 w-4 mr-2" />}
                     {item.name}
                   </Button>
                 </Link>
               ))}
-              
-              {isLoggedIn && (
-                <Button
-                  variant="ghost"
-                  onClick={handleLogout}
-                  className="rounded-full px-6 text-gray-600 hover:text-orange-600 hover:bg-orange-50"
-                >
-                  {t('logout')}
-                </Button>
-              )}
             </div>
             
             {/* Language Switch */}
@@ -134,18 +91,6 @@ const Navigation = ({ userXP = 0 }: NavigationProps) => {
         {isMenuOpen && (
           <div className="md:hidden absolute top-16 left-0 right-0 bg-white/95 backdrop-blur-md border-b border-orange-100 shadow-lg animate-slide-up">
             <div className="px-4 py-4 space-y-2">
-              {/* Mobile XP Bar - Always show */}
-              <div className="flex items-center justify-between bg-gradient-to-r from-yellow-50 to-orange-50 rounded-xl px-4 py-3 border border-orange-200 mb-4">
-                <div className="flex items-center space-x-2">
-                  <Star className="h-4 w-4 text-yellow-500" />
-                  <span className="text-sm font-bold text-orange-600">{t('level')} {level}</span>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <Progress value={progressPercent} className="w-20 h-2" />
-                  <span className="text-xs text-gray-600">{userXP} XP</span>
-                </div>
-              </div>
-
               {navItems.map((item) => (
                 <Link key={item.name} to={item.path} onClick={() => setIsMenuOpen(false)}>
                   <Button
@@ -156,24 +101,10 @@ const Navigation = ({ userXP = 0 }: NavigationProps) => {
                         : "text-gray-600 hover:text-orange-600 hover:bg-orange-50"
                     }`}
                   >
-                    {item.name === t('feedback') && <MessageSquare className="h-4 w-4 mr-2" />}
                     {item.name}
                   </Button>
                 </Link>
               ))}
-              
-              {isLoggedIn && (
-                <Button
-                  variant="ghost"
-                  onClick={() => {
-                    handleLogout();
-                    setIsMenuOpen(false);
-                  }}
-                  className="w-full justify-start rounded-xl text-gray-600 hover:text-orange-600 hover:bg-orange-50"
-                >
-                  {t('logout')}
-                </Button>
-              )}
               
               {/* Mobile Language Switch */}
               <div className="flex items-center justify-between bg-orange-50 rounded-xl px-4 py-3 border border-orange-200 mt-4">
