@@ -1,17 +1,24 @@
 
-import React, { useState } from 'react';
+import React, { useEffect } from 'react';
 import Navigation from '@/components/Navigation';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ArrowRight } from "lucide-react";
-import { useToast } from "@/hooks/use-toast";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { useAuth } from "@/contexts/AuthContext";
 
 const Login = () => {
-  const [isLoading, setIsLoading] = useState(false);
-  const { toast } = useToast();
   const { language } = useLanguage();
+  const { currentUser, login, loading } = useAuth();
+  const navigate = useNavigate();
+
+  // Redirect if already logged in
+  useEffect(() => {
+    if (currentUser) {
+      navigate('/foods');
+    }
+  }, [currentUser, navigate]);
 
   const content = {
     en: {
@@ -21,9 +28,6 @@ const Login = () => {
       continueWithGoogle: "Continue with Google",
       backToHome: "← Back to home",
       signingIn: "Signing in...",
-      welcomeBack: "Welcome back!",
-      loginSuccess: "You've been successfully logged in.",
-      connectSupabase: "Please connect to Supabase to enable Google authentication."
     },
     th: {
       welcome: "ยินดีต้อนรับสู่เฟรชคีปเปอร์",
@@ -32,28 +36,18 @@ const Login = () => {
       continueWithGoogle: "เข้าสู่ระบบด้วย Google",
       backToHome: "← กลับหน้าแรก",
       signingIn: "กำลังเข้าสู่ระบบ...",
-      welcomeBack: "ยินดีต้อนรับกลับ!",
-      loginSuccess: "เข้าสู่ระบบสำเร็จแล้ว",
-      connectSupabase: "กรุณาเชื่อมต่อกับ Supabase เพื่อเปิดใช้งานการยืนยันตัวตนด้วย Google"
     }
   };
 
   const t = content[language];
 
   const handleGoogleLogin = async () => {
-    setIsLoading(true);
-    
-    // Simulate Google login process
-    await new Promise(resolve => setTimeout(resolve, 1500));
-    
-    toast({
-      title: t.welcomeBack,
-      description: t.connectSupabase,
-      variant: "destructive"
-    });
-    
-    setIsLoading(false);
+    await login();
   };
+
+  if (currentUser) {
+    return null; // Will redirect via useEffect
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-orange-50">
@@ -90,7 +84,7 @@ const Login = () => {
               <Button
                 onClick={handleGoogleLogin}
                 className="w-full py-6 bg-white hover:bg-gray-50 text-gray-700 border-2 border-orange-200 hover:border-orange-300 rounded-xl shadow-md hover:shadow-lg transition-all duration-200 group"
-                disabled={isLoading}
+                disabled={loading}
               >
                 <svg className="w-5 h-5 mr-3" viewBox="0 0 24 24">
                   <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
@@ -98,7 +92,7 @@ const Login = () => {
                   <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
                   <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
                 </svg>
-                {isLoading ? t.signingIn : (
+                {loading ? t.signingIn : (
                   <div className="flex items-center">
                     <span className="text-lg font-semibold">{t.continueWithGoogle}</span>
                     <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />

@@ -2,25 +2,33 @@
 import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
-import { Menu, X } from "lucide-react";
-import { Link, useLocation } from "react-router-dom";
+import { Menu, X, LogOut, User } from "lucide-react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { useAuth } from "@/contexts/AuthContext";
 
 const Navigation = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
   const { language, setLanguage, t } = useLanguage();
+  const { currentUser, logout } = useAuth();
 
   const navItems = [
     { name: t('home'), path: '/' },
     { name: t('myFoods'), path: '/foods' },
-    { name: t('login'), path: '/login' },
+    ...(currentUser ? [] : [{ name: t('login'), path: '/login' }]),
   ];
 
   const isActive = (path: string) => location.pathname === path;
 
   const toggleLanguage = () => {
     setLanguage(language === 'en' ? 'th' : 'en');
+  };
+
+  const handleLogout = async () => {
+    await logout();
+    navigate('/');
   };
 
   return (
@@ -57,6 +65,34 @@ const Navigation = () => {
                 </Link>
               ))}
             </div>
+            
+            {/* User Info & Logout */}
+            {currentUser && (
+              <div className="flex items-center space-x-3">
+                <div className="flex items-center space-x-2 bg-orange-50 rounded-full px-4 py-2 border border-orange-200">
+                  {currentUser.photoURL ? (
+                    <img 
+                      src={currentUser.photoURL} 
+                      alt="Profile" 
+                      className="w-6 h-6 rounded-full"
+                    />
+                  ) : (
+                    <User className="w-5 h-5 text-orange-600" />
+                  )}
+                  <span className="text-sm font-medium text-gray-700">
+                    {currentUser.displayName || currentUser.email}
+                  </span>
+                </div>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={handleLogout}
+                  className="text-gray-600 hover:text-orange-600"
+                >
+                  <LogOut className="h-4 w-4" />
+                </Button>
+              </div>
+            )}
             
             {/* Language Switch */}
             <div className="flex items-center space-x-2 bg-orange-50 rounded-full px-4 py-2 border border-orange-200">
@@ -105,6 +141,34 @@ const Navigation = () => {
                   </Button>
                 </Link>
               ))}
+              
+              {/* Mobile User Info & Logout */}
+              {currentUser && (
+                <div className="border-t border-orange-200 pt-4 mt-4 space-y-2">
+                  <div className="flex items-center space-x-3 bg-orange-50 rounded-xl px-4 py-3 border border-orange-200">
+                    {currentUser.photoURL ? (
+                      <img 
+                        src={currentUser.photoURL} 
+                        alt="Profile" 
+                        className="w-8 h-8 rounded-full"
+                      />
+                    ) : (
+                      <User className="w-6 h-6 text-orange-600" />
+                    )}
+                    <span className="text-sm font-medium text-gray-700">
+                      {currentUser.displayName || currentUser.email}
+                    </span>
+                  </div>
+                  <Button
+                    variant="ghost"
+                    onClick={handleLogout}
+                    className="w-full justify-start rounded-xl text-gray-600 hover:text-orange-600 hover:bg-orange-50"
+                  >
+                    <LogOut className="h-4 w-4 mr-2" />
+                    Logout
+                  </Button>
+                </div>
+              )}
               
               {/* Mobile Language Switch */}
               <div className="flex items-center justify-between bg-orange-50 rounded-xl px-4 py-3 border border-orange-200 mt-4">
